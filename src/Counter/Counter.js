@@ -10,9 +10,6 @@ export default class Counter extends Component {
      */
     constructor(props) {
         super(props);
-
-
-
         this.onChange = this.onChange.bind(this);
         this.onClickIncrementButton = this.onClickIncrementButton.bind(this);
         this.onClickDecrementButton = this.onClickDecrementButton.bind(this);
