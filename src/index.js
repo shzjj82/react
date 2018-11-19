@@ -5,7 +5,7 @@ import './index.css';
 // import ClickCounter from './ClickCounter/ClickCounter';
 import ControlPanel from './Views/ControlPanel';
 import * as serviceWorker from './serviceWorker';
-import Provider from './Provider';
+import { Provider } from 'react-redux';
 import store from './Redux/Store';
 
 ReactDOM.render(
