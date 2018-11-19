@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CounterStore from "../stores/CounterStore";
-import * as Actions from '../Actions';
+import store from '../Store';
+import * as Action from '../Actions';
+// import CounterStore from "../stores/CounterStore";
+// import * as Actions from '../Actions';
 export default class Counter extends Component {
     /**
      * Creates an instance of Counter.
@@ -11,39 +13,64 @@ export default class Counter extends Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
+        this.getOwnState = this.getOwnState.bind(this);
         this.onClickIncrementButton = this.onClickIncrementButton.bind(this);
         this.onClickDecrementButton = this.onClickDecrementButton.bind(this);
-        //通过store取值
-        this.state = {
-            count: CounterStore.getCounterValues()[props.caption]
-        }
+        //通过store取值 
+        // flux 的用法
+        // this.state = {
+        //     count: CounterStore.getCounterValues()[props.caption]
+        // }
+        this.state = this.getOwnState();
     }
 
     //绑定监听事件
     componentDidMount() {
-        CounterStore.addChangeListener(this.onChange);
+        //flux 的 用法
+        // CounterStore.addChangeListener(this.onChange);
+        //redux 的用法
+        store.subscribe(this.onChange);
     }
 
     //移除监听事件
     componentWillUnmount() {
-        CounterStore.removeChangeListener(this.onChange);
+        // flux 的用法
+        // CounterStore.removeChangeListener(this.onChange);
+        // redux的用法
+        store.unsubscribe(this.onChange);
     }
 
     onChange() {
-        const newCount = CounterStore.getCounterValues()[this.props.caption];
-        this.setState({
-            count: newCount
-        })
+       
+        // flux 的用法
+        // const newCount = CounterStore.getCounterValues()[this.props.caption];
+        // this.setState({
+        //     count: newCount
+        // })
+        // redux 的
+        this.setState(this.getOwnState());
     }
 
+    getOwnState(){
+        // redux 的用法
+        return {
+            count:store.getState()[this.props.caption]
+        }
+    }
 
     onClickIncrementButton() {
         //通过actions更改对应的值
-        Actions.increment(this.props.caption);
+        // flux 的用法
+        // Actions.increment(this.props.caption);
+        // redux 的用法
+        store.dispatch(Action.increment(this.props.caption));
     }
 
     onClickDecrementButton() {
-        Actions.decrement(this.props.caption);
+        //flux 的用法
+        // Actions.decrement(this.props.caption);
+        // redux 的用法
+        store.dispatch(Action.decrement(this.props.caption));
     }
 
     /**
@@ -63,8 +90,8 @@ export default class Counter extends Component {
         const WrapperStyle = { marginBottom: '10px' };
         return (
             <div style={WrapperStyle}>
-                <button style={buttonStyle} onClick={this.onClickIncrementButton}>-</button>
-                <button style={buttonStyle} onClick={this.onClickDecrementButton}>+</button>
+                <button style={buttonStyle} onClick={this.onClickDecrementButton}>-</button>
+                <button style={buttonStyle} onClick={this.onClickIncrementButton}>+</button>
                 <span>{caption}</span> count: {this.state.count}
             </div>
         )
