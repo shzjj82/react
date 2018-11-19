@@ -1,17 +1,48 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import PropTypes from 'prop-types';
-import store from '../Store';
-import * as Action from '../Actions';
+import store from '../Redux/Store';
+import * as Action from '../Redux/Actions';
 // import CounterStore from "../stores/CounterStore";
 // import * as Actions from '../Actions';
-export default class Counter extends Component {
+
+const buttonStyle = {
+    margin: '10px'
+};
+
+// 只负责渲染 展示页面
+class Counter extends Component{
+    static propTypes = {
+        caption: PropTypes.string.isRequired,
+        onIncrement: PropTypes.func.isRequired,
+        onDecrement: PropTypes.func.isRequired,
+        initValue: PropTypes.number.isRequired
+    }
+
+    static defaultProps = {
+        initValue: 0
+    }
+
+    render(){
+        const { caption,onIncrement,onDecrement,count } =this.props;
+        return (
+            <div>
+                <button style={buttonStyle} onClick={onIncrement}>+</button>
+                <button style={buttonStyle} onClick={onDecrement}>-</button>
+                <span>{caption} count: {count}</span> 
+            </div>
+        )
+    }
+}
+
+// 负责处理与store之间的通信关系
+export default class CounterContainer extends Component {
     /**
      * Creates an instance of Counter.
      * @param {object} props 传入值
      * @memberof Counter
      */
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
         this.onChange = this.onChange.bind(this);
         this.getOwnState = this.getOwnState.bind(this);
         this.onClickIncrementButton = this.onClickIncrementButton.bind(this);
@@ -86,24 +117,8 @@ export default class Counter extends Component {
 
     render() {
         const { caption } = this.props;
-        const buttonStyle = { padding: '10px', marginRight: '10px' };
-        const WrapperStyle = { marginBottom: '10px' };
-        return (
-            <div style={WrapperStyle}>
-                <button style={buttonStyle} onClick={this.onClickDecrementButton}>-</button>
-                <button style={buttonStyle} onClick={this.onClickIncrementButton}>+</button>
-                <span>{caption}</span> count: {this.state.count}
-            </div>
-        )
+        return <Counter caption={this.props.caption} onIncrement={this.onClickIncrementButton} onDecrement={this.onClickDecrementButton} count={this.state.count}></Counter>
     }
 
 }
-// 类型判断 判断props的类型是否正确 isRequired 则表示必填项 （需要引入PropTypes);
-Counter.propTypes = {
-    caption: PropTypes.string.isRequired,
-    initValue: PropTypes.number
-}
-// 默认值 当props不传入时 默认值设定 （为了更好的代码管理)
-Counter.defaultProps = {
-    initValue: 10
-}
+
